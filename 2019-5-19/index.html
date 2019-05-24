@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Linux,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="1. 基础正则表达式1.1 正则表达式与通配符 正则表达式正则表达式用来在文件中匹配符合条件的字符串，正则是包含匹配。grep、awk、sed等命令可以支持正则表达式 通配符通配符用来匹配符合条件的文件名，通配符是完全匹配。ls、find、cp这些命令不支持正则表达式，所以只能用shell自己的通配符来进行匹配  1.2 基础正则表达式   元字符 作用     * 前一个字符匹配0次或任意多次">
+<meta name="keywords" content="Linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Shell编程">
+<meta property="og:url" content="https://adj15.github.io/2019-5-19/index.html">
+<meta property="og:site_name" content="咕噜噜">
+<meta property="og:description" content="1. 基础正则表达式1.1 正则表达式与通配符 正则表达式正则表达式用来在文件中匹配符合条件的字符串，正则是包含匹配。grep、awk、sed等命令可以支持正则表达式 通配符通配符用来匹配符合条件的文件名，通配符是完全匹配。ls、find、cp这些命令不支持正则表达式，所以只能用shell自己的通配符来进行匹配  1.2 基础正则表达式   元字符 作用     * 前一个字符匹配0次或任意多次">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-05-24T06:49:25.572Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Shell编程">
+<meta name="twitter:description" content="1. 基础正则表达式1.1 正则表达式与通配符 正则表达式正则表达式用来在文件中匹配符合条件的字符串，正则是包含匹配。grep、awk、sed等命令可以支持正则表达式 通配符通配符用来匹配符合条件的文件名，通配符是完全匹配。ls、find、cp这些命令不支持正则表达式，所以只能用shell自己的通配符来进行匹配  1.2 基础正则表达式   元字符 作用     * 前一个字符匹配0次或任意多次">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://adj15.github.io/2019-5-19/">
+
+
+
+
+
+  <title>Shell编程 | 咕噜噜</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">咕噜噜</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">意识流选手</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://adj15.github.io/2019-5-19/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Adj15">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="咕噜噜">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Shell编程</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-19T22:51:24+08:00">
+                2019-05-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019-5-19/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019-5-19/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="1-基础正则表达式"><a href="#1-基础正则表达式" class="headerlink" title="1. 基础正则表达式"></a>1. 基础正则表达式</h2><h3 id="1-1-正则表达式与通配符"><a href="#1-1-正则表达式与通配符" class="headerlink" title="1.1 正则表达式与通配符"></a>1.1 正则表达式与通配符</h3><ul>
+<li><strong><em>正则表达式</em></strong><br>正则表达式用来在<strong>文件中</strong>匹配符合条件的<strong>字符串</strong>，正则是<strong>包含匹配</strong>。grep、awk、sed等命令可以支持正则表达式</li>
+<li><strong><em>通配符</em></strong><br>通配符用来匹配符合条件的<strong>文件名</strong>，通配符是<strong>完全匹配</strong>。ls、find、cp这些命令不支持正则表达式，所以只能用shell自己的通配符来进行匹配</li>
+</ul>
+<h3 id="1-2-基础正则表达式"><a href="#1-2-基础正则表达式" class="headerlink" title="1.2 基础正则表达式"></a>1.2 基础正则表达式</h3><table>
+<thead>
+<tr>
+<th>元字符</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>*</td>
+<td>前一个字符匹配0次或任意多次</td>
+</tr>
+<tr>
+<td>.</td>
+<td>匹配除了换行符外任意一个字符</td>
+</tr>
+<tr>
+<td>^</td>
+<td>匹配行首。例如：^hello会匹配以hello开头的行</td>
+</tr>
+<tr>
+<td>$</td>
+<td>匹配行尾。例如：hello$会匹配以hello结尾的行</td>
+</tr>
+<tr>
+<td>[]</td>
+<td>匹配中括号中指定的任意一个字符，只匹配一个字符。例如：[0-9]匹配任意一位数字，[a-z][0-9]匹配小写字和一位数字构成的两位字符</td>
+</tr>
+<tr>
+<td>[^]</td>
+<td>匹配除[]包含字符外的任意一个字符</td>
+</tr>
+<tr>
+<td>\</td>
+<td>转义符</td>
+</tr>
+<tr>
+<td>{n}</td>
+<td>表示其前面的字符恰好出现n次。例如：[0-9]{4}匹配4位数字</td>
+</tr>
+<tr>
+<td>{n,}</td>
+<td>表示其前面的字符出现不小于n次。例如：[0-9]{2,}表示2位及以上的数字</td>
+</tr>
+<tr>
+<td>{n,m}</td>
+<td>表示前面的字符至少出现n次，最多出现m次</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p>“*“</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 匹配所有内容，包括空白行</span><br><span class="line">grep &quot;a*&quot; test.txt</span><br><span class="line"></span><br><span class="line"># 匹配至少包含一个a的行</span><br><span class="line">grep &quot;aa*&quot; test.txt</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>“.”</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 匹配在s和d之间有两个任意字符的字符串</span><br><span class="line">grep &quot;s..d&quot; test.txt</span><br><span class="line"></span><br><span class="line"># 匹配在s和d之间有任意字符的字符串</span><br><span class="line">grep &quot;s.*d&quot; test.txt</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>“^” &amp; “$”</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># 匹配以M开头的行</span><br><span class="line">grep &quot;^M&quot; test.txt</span><br><span class="line"></span><br><span class="line"># 匹配以M结尾的行</span><br><span class="line">grep &quot;M$&quot; test.txt</span><br><span class="line"></span><br><span class="line"># 匹配空白行</span><br><span class="line">grep &quot;^$&quot; test.txt</span><br><span class="line"># -n 可以显示行数</span><br><span class="line">grep -n &quot;^$&quot; test.txt</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>“[]”</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 匹配s和id之间，a或o的字符串</span><br><span class="line">grep &quot;s[ao]id&quot; test.txt</span><br><span class="line"></span><br><span class="line"># 匹配任意一个数字</span><br><span class="line">grep &quot;[0-9]&quot; test.txt</span><br><span class="line"></span><br><span class="line"># 匹配以小写字符开头的行</span><br><span class="line">greo &quot;^[a-z]&quot; test.txt</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>“\“</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 匹配使用&quot;.&quot;结尾的行</span><br><span class="line">grep &quot;\.$&quot; test.txt</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="2-字符截取命令"><a href="#2-字符截取命令" class="headerlink" title="2. 字符截取命令"></a>2. 字符截取命令</h2><h3 id="2-1-cut字段提取命令"><a href="#2-1-cut字段提取命令" class="headerlink" title="2.1 cut字段提取命令"></a>2.1 cut字段提取命令</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cut [选项] 文件名</span><br><span class="line">选项：</span><br><span class="line">-f	提取第几列</span><br><span class="line">-d	按照指定分隔符分割列</span><br></pre></td></tr></table></figure>
+<p>例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ cut -f 2 student.txt</span><br><span class="line"></span><br><span class="line">$ cut -f 2,4 student.txt</span><br><span class="line"></span><br><span class="line">$ cut -d &quot;:&quot; -f 1,2 /etc/passwd</span><br><span class="line"></span><br><span class="line">$ cat /etc/passwd | grep /bin/bash | grep -v root | cut -d &quot;:&quot; -f 1</span><br></pre></td></tr></table></figure></p>
+<p>cut命令的局限，awk可以弥补<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df -h | cut -d &quot; &quot; -f 1,3</span><br></pre></td></tr></table></figure></p>
+<h3 id="2-2-printf命令"><a href="#2-2-printf命令" class="headerlink" title="2.2 printf命令"></a>2.2 printf命令</h3><p><em>printf命令是awk命令的基础</em><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$ printf %s 1 2 3 4 5 6</span><br><span class="line"></span><br><span class="line">$ printf %s %s %s 1 2 3 4 5 6</span><br><span class="line"></span><br><span class="line">$ printf &apos;%s %s %s&apos; 1 2 3 4 5 6</span><br><span class="line"></span><br><span class="line">$ printf &apos;%s %s %s\n&apos; 1 2 3 4 5 6</span><br><span class="line"></span><br><span class="line">$ printf &apos;%s&apos; $(cat student.txt)</span><br><span class="line">$ printf &apos;%s\t %s\t %s\t %s\t\n&apos; $(cat student.txt)</span><br></pre></td></tr></table></figure></p>
+<h3 id="2-3-awk命令"><a href="#2-3-awk命令" class="headerlink" title="2.3 awk命令"></a>2.3 awk命令</h3><p>awk命令中，printf可识别” “作为分割符<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 格式：awk &apos;条件1&#123;命令1&#125;条件2&#123;命令2&#125;&apos; 文件名</span><br><span class="line"></span><br><span class="line">$ awk &apos;&#123;printf $2 &quot;\t&quot; $3 &quot;\n&quot;&#125;&apos; student.txt</span><br><span class="line"></span><br><span class="line">$ df -h | awk &apos;&#123;print $1 &quot;\t&quot; $3&#125;&apos;</span><br><span class="line"></span><br><span class="line"># 弥补cut的局限</span><br><span class="line">$ df -h | grep /boot | awk &apos;&#123;print $5&#125;&apos; | cut -d &quot;%&quot; -f 1</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li><p><strong><em>BEGIN（可用于指定分割符）</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># 在开始执行一次</span><br><span class="line">$ awk &apos;BEGIN &#123;print &quot;test !!&quot;&#125; &#123;printf $1 &quot;\t&quot; $2 &quot;\n&quot;&#125;&apos; student.txt</span><br><span class="line"># 与下区分</span><br><span class="line">$ awk &apos;&#123;print &quot;test !!&quot;&#125; &#123;printf $1 &quot;\t&quot; $2 &quot;\n&quot;&#125;&apos; student.txt</span><br><span class="line"></span><br><span class="line"># 指定分割符</span><br><span class="line">$ awk &apos;BEGIN &#123;FS=&quot;:&quot;&#125; &#123;print $1 &quot;\t&quot; $3&#125;&apos; /etc/passwd</span><br><span class="line">$ 与下区分</span><br><span class="line">$ awk &apos;&#123;FS=&quot;:&quot;&#125; &#123;print $1 &quot;\t&quot; $3&#125;&apos; /etc/passwd</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong><em>END</em></strong></p>
+</li>
+<li><p><strong><em>条件选择</em></strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 先把非数字的行去掉，再输出成绩为100的学生的名字</span><br><span class="line">$ cat student.txt | grep -v ID | awk &apos;$4==100 &#123;print $2&#125;&apos;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="2-4-sed命令"><a href="#2-4-sed命令" class="headerlink" title="2.4 sed命令"></a>2.4 sed命令</h3><p><em>sed是一种几乎包括再所有UNIX平台（包括Linux）的轻量级流编辑器。sed主要是用来将数据进行选取、替换、删除、新增的命令。vim只能对文本进行操作，sed可以通过管道符直接对命令结果进行操作。</em></p>
+<h2 id="3-字符处理命令"><a href="#3-字符处理命令" class="headerlink" title="3. 字符处理命令"></a>3. 字符处理命令</h2><h3 id="3-1-sort排序命令"><a href="#3-1-sort排序命令" class="headerlink" title="3.1 sort排序命令"></a>3.1 sort排序命令</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">sort [选项] 文件名</span><br><span class="line">选项：</span><br><span class="line">-f</span><br><span class="line">-n</span><br><span class="line">-r</span><br><span class="line">-t</span><br><span class="line">-k n[,m]</span><br></pre></td></tr></table></figure>
+<p>例:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 按首字母正序排列</span><br><span class="line">$ sort /etc/passwd</span><br><span class="line"></span><br><span class="line"># 按首字母倒序排列</span><br><span class="line">$ sort -r /etc/passwd</span><br></pre></td></tr></table></figure></p>
+<h3 id="3-2-wc统计命令"><a href="#3-2-wc统计命令" class="headerlink" title="3.2 wc统计命令"></a>3.2 wc统计命令</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">wc [选项] 文件名</span><br><span class="line">选项：</span><br><span class="line">-l	行数</span><br><span class="line">-w	单词</span><br><span class="line">-m	字符</span><br></pre></td></tr></table></figure>
+<h2 id="4-条件判断"><a href="#4-条件判断" class="headerlink" title="4. 条件判断"></a>4. 条件判断</h2><h3 id="4-1-按照文件类型进行判断"><a href="#4-1-按照文件类型进行判断" class="headerlink" title="4.1 按照文件类型进行判断"></a>4.1 按照文件类型进行判断</h3><table>
+<thead>
+<tr>
+<th>测试选项</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-d</td>
+<td>判断文件是否存在，并是否是目录文件</td>
+</tr>
+<tr>
+<td>-e</td>
+<td>判断文件是否存在</td>
+</tr>
+<tr>
+<td>-f</td>
+<td>判断文件是否存在，并是否是普通文件</td>
+</tr>
+<tr>
+<td>-L</td>
+<td>判断文件是否存在，并是否为符号链接文件</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">格式：</span><br><span class="line">test -e /root/install.log</span><br><span class="line">[ -e /root/install.log ]</span><br><span class="line"></span><br><span class="line">注：</span><br><span class="line">需用 echo $? 查看结果，0为存在，1为不存在</span><br><span class="line">或 [ -e /root/install.log ] &amp;&amp; echo &quot;yes&quot; || echo &quot;no&quot;</span><br></pre></td></tr></table></figure>
+<h3 id="4-2-按照文件权限进行判断"><a href="#4-2-按照文件权限进行判断" class="headerlink" title="4.2 按照文件权限进行判断"></a>4.2 按照文件权限进行判断</h3><table>
+<thead>
+<tr>
+<th>测试选项</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-r</td>
+<td>判断是否存在，且是否拥有读权限</td>
+</tr>
+<tr>
+<td>-w</td>
+<td>判断是否存在，且是否拥有写权限</td>
+</tr>
+<tr>
+<td>-x</td>
+<td>判断是否存在，且是否拥有执行权限</td>
+</tr>
+</tbody>
+</table>
+<h3 id="4-3-两个文件之间进行比较"><a href="#4-3-两个文件之间进行比较" class="headerlink" title="4.3 两个文件之间进行比较"></a>4.3 两个文件之间进行比较</h3><table>
+<thead>
+<tr>
+<th>测试选项</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>文件1 -nt 文件2</td>
+<td>按修改时间比较，文件1比文件2新？</td>
+</tr>
+<tr>
+<td>文件1 -ot 文件2</td>
+<td>按修改时间比较，文件1比文件2旧？</td>
+</tr>
+<tr>
+<td>文件1 -ef 文件2</td>
+<td>是否Inode号一致</td>
+</tr>
+</tbody>
+</table>
+<h3 id="4-4-整数比较"><a href="#4-4-整数比较" class="headerlink" title="4.4 整数比较"></a>4.4 整数比较</h3><h3 id="4-5-字符串判断"><a href="#4-5-字符串判断" class="headerlink" title="4.5 字符串判断"></a>4.5 字符串判断</h3><table>
+<thead>
+<tr>
+<th>选项</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-z</td>
+<td>是否为空</td>
+</tr>
+<tr>
+<td>-n</td>
+<td>是否非空</td>
+</tr>
+<tr>
+<td>==</td>
+<td>是否相等</td>
+</tr>
+<tr>
+<td>!=</td>
+<td>是否不等</td>
+</tr>
+</tbody>
+</table>
+<h3 id="4-6-多重判断"><a href="#4-6-多重判断" class="headerlink" title="4.6 多重判断"></a>4.6 多重判断</h3><table>
+<thead>
+<tr>
+<th>选项</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>判断1 -a 判断2</td>
+<td>逻辑与</td>
+</tr>
+<tr>
+<td>判断1 -o 判断2</td>
+<td>逻辑或</td>
+</tr>
+<tr>
+<td>! 判断</td>
+<td>逻辑非</td>
+</tr>
+</tbody>
+</table>
+<h2 id="5-流程控制"><a href="#5-流程控制" class="headerlink" title="5. 流程控制"></a>5. 流程控制</h2><h3 id="5-1-if"><a href="#5-1-if" class="headerlink" title="5.1 if"></a>5.1 if</h3><h4 id="5-1-1-单分支if条件语句"><a href="#5-1-1-单分支if条件语句" class="headerlink" title="5.1.1 单分支if条件语句"></a>5.1.1 单分支if条件语句</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/bash</span><br><span class="line"># 统计根分区使用率</span><br><span class="line"></span><br><span class="line">rate=$(df -h | grep &quot;/dev/sda1&quot; | awk &apos;&#123;print $5&#125;&apos; | cut -d &quot;%&quot; -f 1)</span><br><span class="line"></span><br><span class="line">if [ $rate -ge 80 ]</span><br><span class="line">then</span><br><span class="line">	echo &quot;Warning!! /dev/sda1 will be full!!!&quot;</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+<h4 id="5-1-2-双分支if条件语句"><a href="#5-1-2-双分支if条件语句" class="headerlink" title="5.1.2 双分支if条件语句"></a>5.1.2 双分支if条件语句</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/bash</span><br><span class="line">#给etc目录备份</span><br><span class="line"></span><br><span class="line">date=$(date +%y%m%d)</span><br><span class="line">size=$(du -sh /etc)</span><br><span class="line"></span><br><span class="line">if [ -d /tmp/dbback ]</span><br><span class="line">        then</span><br><span class="line">                echo &quot;Date is : $date&quot; &gt; /tmp/dbback/db.txt</span><br><span class="line">                echo &quot;Size is : $size&quot; &gt;&gt; /tmp/dbback/db.txt</span><br><span class="line">                cd /tmp/dbback</span><br><span class="line">                tar -zcf etc_$date.tar.gz db.txt &amp;&gt; /dev/null</span><br><span class="line">                rm -rf /tmp/dbback/db.txt</span><br><span class="line">        else</span><br><span class="line">                mkdir /tmp/dbback</span><br><span class="line">                echo &quot;Date is : $date&quot; &gt; /tmp/dbback/db.txt</span><br><span class="line">                echo &quot;Size is : $size&quot; &gt;&gt; /tmp/dbback/db.txt</span><br><span class="line">                cd /tmp/dbback</span><br><span class="line">                tar -zcf etc_$date.tar.gz db.txt &amp;&gt; /dev/null</span><br><span class="line">                rm -rf /tmp/dbback/db.txt</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+<h4 id="5-1-3-多分支if条件语句"><a href="#5-1-3-多分支if条件语句" class="headerlink" title="5.1.3 多分支if条件语句"></a>5.1.3 多分支if条件语句</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/bash</span><br><span class="line"># 判断用户输入的什么文件</span><br><span class="line"></span><br><span class="line"># 接收键盘的输入，并赋予变量file</span><br><span class="line">read -p &quot;Please input a filename: &quot; file</span><br><span class="line"></span><br><span class="line"># 判断file变量是否为空</span><br><span class="line">if [ -z &quot;$file&quot; ]</span><br><span class="line">	then</span><br><span class="line">		ehco &quot;Error,please input a filename&quot;</span><br><span class="line">		exit 1</span><br><span class="line"># 判断file的值是否存在</span><br><span class="line">elif [ ! -e &quot;$file&quot; ]</span><br><span class="line">	then</span><br><span class="line">		echo &quot;Your input is not a file!&quot;</span><br><span class="line">		exit 2</span><br><span class="line"># 判断file的值是否为普通文件</span><br><span class="line">elif [ -f &quot;$file&quot; ]</span><br><span class="line">	then</span><br><span class="line">		echo &quot;$file is a regulare file&quot;</span><br><span class="line"># 判断file的值是否为目录文件</span><br><span class="line">elif [ -d &quot;$file&quot; ]</span><br><span class="line">	then</span><br><span class="line">		echo &quot;$file is a directory!&quot;</span><br><span class="line">else</span><br><span class="line">	echo &quot;$file is an other file!&quot;</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+<h3 id="5-2-case"><a href="#5-2-case" class="headerlink" title="5.2 case"></a>5.2 case</h3><p><em>类似switch</em><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/bash</span><br><span class="line"></span><br><span class="line">echo &quot;如果你想去上海，请输入1&quot;</span><br><span class="line">echo &quot;如果你想去苏州，请输入2&quot;</span><br><span class="line">echo &quot;如果你想去北京，请输入3&quot;</span><br><span class="line"></span><br><span class="line">read -p &quot;请输入：&quot; -t 30 choice</span><br><span class="line"></span><br><span class="line">case $choice in </span><br><span class="line">		1)ss</span><br><span class="line">				echo &quot;前往上海！&quot;</span><br><span class="line">				;;</span><br><span class="line">		2)ss</span><br><span class="line">				echo &quot;前往苏州！&quot;</span><br><span class="line">				;;</span><br><span class="line">		3)ss</span><br><span class="line">				echo &quot;前往北京！&quot;</span><br><span class="line">				;;</span><br><span class="line">		*)</span><br><span class="line">				echo &quot;请输入正确格式！&quot;</span><br><span class="line">				;;</span><br><span class="line">esac</span><br></pre></td></tr></table></figure></p>
+<h3 id="5-3-for"><a href="#5-3-for" class="headerlink" title="5.3 for"></a>5.3 for</h3><h4 id="5-3-1-不知道循环次数"><a href="#5-3-1-不知道循环次数" class="headerlink" title="5.3.1 不知道循环次数"></a>5.3.1 不知道循环次数</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/bash</span><br><span class="line"></span><br><span class="line">for time in morning noon afternoon evening</span><br><span class="line">		do</span><br><span class="line">				echo &quot;time:$time&quot;</span><br><span class="line">		done</span><br></pre></td></tr></table></figure>
+<p>可批量解压缩文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/bash</span><br><span class="line"></span><br><span class="line">cd /lamp</span><br><span class="line">ls *.tar.gz &gt; ls.log</span><br><span class="line">for i in $(cat ls.log)</span><br><span class="line">		do</span><br><span class="line">					# 压缩并把打印信息放入垃圾站</span><br><span class="line">					tar -zxf $i $&gt; /dev/null</span><br><span class="line">		done</span><br><span class="line">rm -rf /lamp/ls.log</span><br></pre></td></tr></table></figure></p>
+<h4 id="5-3-2-知道循环次数"><a href="#5-3-2-知道循环次数" class="headerlink" title="5.3.2 知道循环次数"></a>5.3.2 知道循环次数</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/bash</span><br><span class="line"></span><br><span class="line">s=0</span><br><span class="line"></span><br><span class="line">for ((i=0;i&lt;=100;i=i+1))</span><br><span class="line">        do</span><br><span class="line">                s=$(($s+$i))</span><br><span class="line">        done</span><br><span class="line">echo $s</span><br></pre></td></tr></table></figure>
+<p><em>可用于添加指定数量的用户，代码略</em></p>
+<h3 id="5-4-while"><a href="#5-4-while" class="headerlink" title="5.4 while"></a>5.4 while</h3>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux/" rel="tag"># Linux</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019-5-14/" rel="next" title="Shell基础">
+                <i class="fa fa-chevron-left"></i> Shell基础
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Adj15</p>
+              <p class="site-description motion-element" itemprop="description">“碎碎念”</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/Adj15" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-基础正则表达式"><span class="nav-number">1.</span> <span class="nav-text">1. 基础正则表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-正则表达式与通配符"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 正则表达式与通配符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-基础正则表达式"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 基础正则表达式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-字符截取命令"><span class="nav-number">2.</span> <span class="nav-text">2. 字符截取命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-cut字段提取命令"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 cut字段提取命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-printf命令"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 printf命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-awk命令"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 awk命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-sed命令"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 sed命令</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-字符处理命令"><span class="nav-number">3.</span> <span class="nav-text">3. 字符处理命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-sort排序命令"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 sort排序命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-wc统计命令"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 wc统计命令</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-条件判断"><span class="nav-number">4.</span> <span class="nav-text">4. 条件判断</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-按照文件类型进行判断"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 按照文件类型进行判断</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-按照文件权限进行判断"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 按照文件权限进行判断</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-两个文件之间进行比较"><span class="nav-number">4.3.</span> <span class="nav-text">4.3 两个文件之间进行比较</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-整数比较"><span class="nav-number">4.4.</span> <span class="nav-text">4.4 整数比较</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-5-字符串判断"><span class="nav-number">4.5.</span> <span class="nav-text">4.5 字符串判断</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-6-多重判断"><span class="nav-number">4.6.</span> <span class="nav-text">4.6 多重判断</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-流程控制"><span class="nav-number">5.</span> <span class="nav-text">5. 流程控制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-if"><span class="nav-number">5.1.</span> <span class="nav-text">5.1 if</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#5-1-1-单分支if条件语句"><span class="nav-number">5.1.1.</span> <span class="nav-text">5.1.1 单分支if条件语句</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-1-2-双分支if条件语句"><span class="nav-number">5.1.2.</span> <span class="nav-text">5.1.2 双分支if条件语句</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-1-3-多分支if条件语句"><span class="nav-number">5.1.3.</span> <span class="nav-text">5.1.3 多分支if条件语句</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-case"><span class="nav-number">5.2.</span> <span class="nav-text">5.2 case</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3-for"><span class="nav-number">5.3.</span> <span class="nav-text">5.3 for</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#5-3-1-不知道循环次数"><span class="nav-number">5.3.1.</span> <span class="nav-text">5.3.1 不知道循环次数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-3-2-知道循环次数"><span class="nav-number">5.3.2.</span> <span class="nav-text">5.3.2 知道循环次数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-4-while"><span class="nav-number">5.4.</span> <span class="nav-text">5.4 while</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Adj15</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'https://adj15.github.io/2019-5-19/';
+          this.page.identifier = '2019-5-19/';
+          this.page.title = 'Shell编程';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
